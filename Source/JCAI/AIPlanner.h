@@ -51,6 +51,9 @@ class JCAI_API UAIPlanner : public UActorComponent
 public:
 	UAIPlanner();
 
+	UFUNCTION(BlueprintCallable)
+	void CurrentActionComplete(bool Success);
+	
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 	TArray<TSubclassOf<UPlannerAction>> AvailableActions;
 

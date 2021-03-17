@@ -6,7 +6,11 @@
 UAIPlanner::UAIPlanner()
 {
 	PrimaryComponentTick.bCanEverTick = true;
-} 
+}
+
+void UAIPlanner::CurrentActionComplete(bool Success)
+{
+}
 
 FPlannerNode UAIPlanner::FindOnOpen(FPlannerWorldState WorldState, bool& found)
 {

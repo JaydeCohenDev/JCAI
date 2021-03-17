@@ -8,6 +8,12 @@ struct FPlannerTrait
 	GENERATED_BODY()
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	FString StringValue;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	bool BoolValue;
+	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	int32 IntValue;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
