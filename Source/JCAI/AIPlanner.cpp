@@ -8,10 +8,6 @@ UAIPlanner::UAIPlanner()
 	PrimaryComponentTick.bCanEverTick = true;
 }
 
-void UAIPlanner::CurrentActionComplete(bool Success)
-{
-}
-
 FPlannerNode UAIPlanner::FindOnOpen(FPlannerWorldState WorldState, bool& found)
 {
 	found = true;
@@ -155,8 +151,15 @@ void UAIPlanner::Plan(FPlannerWorldState Start, FPlannerWorldState Goal, bool& S
 	UE_LOG(LogTemp, Error, TEXT("A* planner could not find a path from start to goal"));
 }
 
+void UAIPlanner::CurrentActionComplete(bool Success)
+{
+	ExecuteNextAction();
+}
+
 void UAIPlanner::StartExecutingPlan()
 {
+	PlanIndex = 0;
+	ExecuteNextAction();
 }
 
 void UAIPlanner::StopExecutingPlan()
@@ -194,6 +197,30 @@ FPlannerNode UAIPlanner::GetParent(FPlannerNode Node)
 			return n;
 	
 	return FPlannerNode();
+}
+
+void UAIPlanner::ExecuteNextAction()
+{
+	if(BehaviorTreeComponent == nullptr)
+	{
+		UE_LOG(LogTemp, Error, TEXT("AIPlanner unable to get behaviour tree component of owning actor!"));
+		return;
+	}
+
+	if(!CurrentPlan.IsValidIndex(PlanIndex))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("AIPlanner, Plan complete!"));
+		return;
+	}
+
+	if(CurrentPlan[PlanIndex]->ActionBehavior == nullptr)
+	{
+		UE_LOG(LogTemp, Error, TEXT("AIPlanner attempted to run action with invalid ActionBehaviour!"));
+		return;
+	}
+	
+	BehaviorTreeComponent->SetDynamicSubtree(SubgraphInjectionTag, 	CurrentPlan[PlanIndex]->ActionBehavior);
+	PlanIndex++;
 }
 
 void UAIPlanner::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)

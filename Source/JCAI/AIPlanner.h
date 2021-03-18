@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "PlannerAction.h"
 #include "PlannerWorldState.h"
+#include "BehaviorTree/BehaviorTreeComponent.h"
 #include "Components/ActorComponent.h"
 #include "AIPlanner.generated.h"
 
@@ -61,6 +62,12 @@ public:
 	UPROPERTY()
 	TArray<UPlannerAction*> Actions;
 
+	UPROPERTY(BlueprintReadOnly, EditAnywhere)
+	FGameplayTag SubgraphInjectionTag;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UBehaviorTreeComponent* BehaviorTreeComponent;
+
 	UFUNCTION()
 	FPlannerNode FindOnOpen(FPlannerWorldState WorldState, bool& found);
 
@@ -100,8 +107,16 @@ protected:
 	UPROPERTY()
 	TArray<FPlannerNode> ClosedList;
 
+	UPROPERTY()
+	int32 PlanIndex;
+
+	UFUNCTION()
+	void ExecuteNextAction();
+	
 public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
 	                           FActorComponentTickFunction* ThisTickFunction) override;
 };
+
+
 
